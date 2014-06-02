@@ -5,7 +5,7 @@ var clx = clx || {};
 // ==== Wrapper class to more easily use the  ==== //
 // ==== CLX API for SMS. ========================= //
 // =============================================== //
-clx.api = function () {
+clx.api = function (config) {
 
 	/**
 	 * Default values for the fields that are considered optional.
@@ -29,12 +29,6 @@ clx.api = function () {
 	var password;
 
 	/**
-	 * Base URL to the CLX API.
-	 * @type {String}
-	 */
-	var baseURL;
-
-	/**
 	 * Boolean for logging.
 	 * @type {Boolean}
 	 */
@@ -48,7 +42,7 @@ clx.api = function () {
 
 	/**
 	 * By recieving an object containing all the configurations
-	 * needed to use this class.
+	 * needed to use this class we can set it up.
 	 * 
 	 * Required fields:
 	 * 1. Username
@@ -61,36 +55,33 @@ clx.api = function () {
 	 * @param  {Object} config
 	 * @return {Void}
 	 */
-	this.init = function (config) {
-		// Check for a provided username.
-		if (typeof(config.username) === 'undefined' || config.username.trim().length < 1) {
-			throw Error('You need to provide a username.');
-		}
-
-		// Check for a provided password.
-		if (typeof(config.password) === 'undefined' || config.password.trim().length < 1) {
-			throw Error('You need to provide a password.');
-		}
-
-		// Set the required fields.
-		username = config.username;
-		password = config.password;
-
-		// Check for optionals.
-		if (typeof(config.baseURL) != 'undefined' ||
-			typeof(config.logging) != 'undefined') {
-			baseURL = config.baseURL;
-		}
-
-		// If they are not set we set the default values.
-		else {
-			baseURL = DEFAULTS.baseURL;
-			logging = DEFAULTS.logging;
-		}
-
-		// Initialize http.
-		http = new clx.http();
+	// Make sure there's a username provided.
+	if (typeof(config.username) === 'undefined' || config.username.trim().length < 1) {
+		throw Error('You need to provide a username.');
 	}
+
+	// Make sure there's a password provided.
+	if (typeof(config.password) === 'undefined' || config.password.trim().length < 1) {
+		throw Error('You need to provide a password.');
+	}
+
+	// Make sure there's a http() provided.
+	if (typeof(config.http) === 'undefined') {
+		throw Error('You need to inject a http() class.');
+	}
+
+	// If one is provided we still need to make that it's an
+	// instance of the class we need as to avoid crashing later on.
+	else {
+		if (!(config.http instanceof clx.http)) {
+			throw Error('config.http is not an instance of http().');
+		}
+	}
+
+	// Set the required fields.
+	http = config.http;
+	http.auth.username = config.username;
+	http.auth.password = config.password;
 
 	/**
 	 * Returns the status code from the latest request made.
@@ -113,7 +104,7 @@ clx.api = function () {
 	 */
 	this.getOperators = function (callback) {
 		// Set the URL.
-		http.setURL(baseURL + 'data/testdata.txt');
+		http.setURL('/operator/');
 
 		// Perform the get operation.
 		http.get(callback);
@@ -126,9 +117,9 @@ clx.api = function () {
 	 */
 	this.getOperatorById = function (operatorId, callback) {
 		// Verify that the argument provided is an integer.
-		if (!isNaN(operatorId) && parseInt(operatorId) == getOperatorById) {
+		if (!isNaN(operatorId) && parseInt(Number(operatorId)) == operatorId) {
 			// Set URL.
-			http.setURL(baseURL + '/operator/' + operatorId);
+			http.setURL('/operator/' + operatorId);
 
 			// Perform the get operation.
 			http.get(callback);
@@ -151,6 +142,13 @@ clx.http = function () {
 	 * @type {String}
 	 */
 	var requestURL;
+
+	/**
+	 * Object containing username and password
+	 * for basic authentication.
+	 * @type {Object}
+	 */
+	this.auth;
 
 	/**
 	 * XMLHttpRequestObject.
@@ -189,20 +187,20 @@ clx.http = function () {
 		// Get the appropriate http object.
 		this.xhr = getHttpObject();
 
+		// Set appropriate basic authencation headers.
+		this.xhr.setRequestHeader('Authorization', 'Basic ' + Base64.encode(this.auth.username + ':' + this.auth.password));
+
 		// Setup the callback function.
 		this.xhr.onreadystatechange = function () {
 			// readyState == 4 means that we only do a check when the
 			// request has finished.
 			if (that.xhr.readyState === 4) {
-				// Handle the response.
-				if (that.xhr.status === 200) {
-					// Parse response.
-					var json = responseParser(that.xhr.responseText);
+				// Parse response.
+				var json = responseParser(that.xhr);
 
-					// Send it along to the callback.
-					if (typeof(cb) === 'function') {
-						cb(json);
-					}
+				// Send it along to the callback.
+				if (typeof(cb) === 'function') {
+					cb(json);
 				}
 
 				// If for some reason the request responded with some other
@@ -224,14 +222,17 @@ clx.http = function () {
 	 * @param  {String} responseText JSON
 	 * @return {JSON}
 	 */
-	function responseParser(responseText)  {
+	function responseParser(response)  {
 		try {
-			var json = JSON.parse(responseText);
+			var json = JSON.parse(response.responseText);
 			return json;
 		}
 
 		catch (e) {
-			throw Error('The response could not be parsed as JSON.');
+			return {
+				'Status code': response.status,
+				'Status text': response.statusText
+			};
 		}
 	}
 
@@ -253,3 +254,11 @@ clx.http = function () {
 		throw new Error("Could not create HTTP request object.");
 	}
 }
+
+// ======== Basic cross-browser solution for ========== //
+// ======== encoding and decoding Base64 strings. ===== //
+// ======== Credit: Nicholas Ceriminara, ============== //
+//
+// http://scotch.io/quick-tips/js/how-to-encode-and-decode-strings-with-base64-in-javascript
+// 
+var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9\+\/\=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/\r\n/g,"\n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}

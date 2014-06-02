@@ -2,7 +2,13 @@
 
 module('Constructor tests');
 test('clx.api - valid constructor', function() {
-	var obj = new clx.api();
+	var config = {
+		'username': 'username',
+		'password': 'password',
+		'http': new clx.httpTest()
+	};
+
+	var obj = new clx.api(config);
 	equal(obj instanceof clx.api, true);
 });
 
@@ -10,11 +16,11 @@ module('clx.api - config tests');
 test('Valid config - username and password provided', function () {
 	var config = {
 		'username': 'username',
-		'password': 'password'
+		'password': 'password',
+		'http': new clx.httpTest()
 	};
 
-	var obj = new clx.api();
-	obj.init(config);
+	var obj = new clx.api(config);
 
 	ok(true);
 });
@@ -24,8 +30,7 @@ test('Invalid config - username but no password provided', function () {
 			'username': 'username'
 		};
 
-		var obj = new clx.api();
-		obj.init(config);
+		var obj = new clx.api(config);
 	}, /password/);
 });
 test('Invalid config - password but no username provided', function () {
@@ -34,8 +39,7 @@ test('Invalid config - password but no username provided', function () {
 			'password': 'password'
 		};
 
-		var obj = new clx.api();
-		obj.init(config);
+		var obj = new clx.api(config);
 	}, /username/);
 });
 test('Invalid config - password is blankspace', function () {
@@ -45,8 +49,7 @@ test('Invalid config - password is blankspace', function () {
 			'password': '    '
 		};
 
-		var obj = new clx.api();
-		obj.init(config);
+		var obj = new clx.api(config);
 	}, /password/);
 });
 test('Invalid config - username is blankspace', function () {
@@ -56,44 +59,71 @@ test('Invalid config - username is blankspace', function () {
 			'password': 'password'
 		};
 
-		var obj = new clx.api();
-		obj.init(config);
+		var obj = new clx.api(config);
 	}, /username/);
 });
+test('Invalid config - username and password provided but http omitted', function () {
+	throws(function() {
+		var config = {
+			'username': 'username',
+			'password': 'password'
+		};
 
-// ==========================
-// ========== WIP ===========
-// ==== TODO: ===============
-// ==== 1. use clx.http =====
-// ==========================
-module('clx.http - request tests');
-asyncTest('200 OK on a valid API call', function() {
-	expect(1);
-
-	var config = {
-		'username': 'username',
-		'password': 'password'
-	};
-	var obj = new clx.api();
-	obj.init(config);
-
-	obj.getOperators(function() {
-		equal(200, obj.getStatusCode());
-		start();
-	});
+		var obj = new clx.api(config);
+	}, /you need to inject a http/i);
 });
-asyncTest('404 Not Found on an invalid API call', function() {
-	expect(1);
-
+test('Invalid config - username and password provided but http is not the correct class.', function () {
 	throws(function() {
 		var config = {
 			'username': 'username',
 			'password': 'password',
-			'baseURL': 'src/'
+			'http': new String()
 		};
-		var obj = new clx.api();
-		obj.init(config);
 
-		obj.getOperators();
-	}, /HTTP request failed/);
+		var obj = new clx.api(config);
+	}, /is not an instance of/i);
+})
+
+module('clx.http - request tests');
+asyncTest('Valid request - getOperators()', function () {
+	expect(1);
+
+	var config = {
+		'username': 'username',
+		'password': 'password',
+		'http': new clx.httpTest()
+	};
+	var obj = new clx.api(config);
+
+	obj.getOperators(function() {
+		equal(obj.getStatusCode(), 200);
+		start();
+	});
+});
+asyncTest('Valid request - getOperatorById()', function () {
+	expect(1)
+
+	var config = {
+		'username': 'username',
+		'password': 'password',
+		'http': new clx.httpTest()
+	};
+	var obj = new clx.api(config);
+
+	obj.getOperatorById(10, function() {
+		equal(obj.getStatusCode(), 200);
+		start();
+	});
+});
+test('Invalid request - getOperatorById(): string passed as operator id', function() {
+	throws(function() {
+		var config = {
+			'username': 'username',
+			'password': 'password',
+			'http': new clx.httpTest()
+		};
+		var obj = new clx.api(config);
+
+		obj.getOperatorById('string');
+	}, /parameter 'operatorId' must be an integer/);
 });
