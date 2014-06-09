@@ -200,6 +200,13 @@ clx.api = function (config) {
 		}
 	}
 
+	/**
+	 * Retrieves a single price entry belonging to a specific operator and gateway.
+	 * @param  {Integer}   gatewayId
+	 * @param  {Integer}   operatorId
+	 * @param  {Function} callback
+	 * @return {Void}
+	 */
 	this.getPriceEntriesByGatewayIdAndOperatorId = function (gatewayId, operatorId, callback) {
 		// Verify gatewayId.
 		if (gatewayId === null || (isNaN(gatewayId) && parseInt(Number(gatewayId)) !== gatewayId)) {
@@ -215,6 +222,39 @@ clx.api = function (config) {
 		
 		// Set URL.
 		http.setURL('/gateway/' + gatewayId + '/price/' + operatorId);
+
+		// Perform the get operation.
+		http.get(callback);
+	}
+
+	/**
+	 * Retrieves a single price entry from a specific date belonging to a specific operator and gateway.
+	 * @param  {Integer}   gatewayId
+	 * @param  {Integer}   operatorId
+	 * @param  {Date}  	   date
+	 * @param  {Function}  callback
+	 * @return {Void}
+	 */
+	this.getPriceEntriesByGatewayIdAndOperatorIdAndDate = function (gatewayId, operatorId, date, callback) {
+		// Verify gatewayId.
+		if (gatewayId === null || (isNaN(gatewayId) && parseInt(Number(gatewayId)) !== gatewayId)) {
+			throw Error('The parameter \'gatewayId\' must be an integer.');
+		}
+
+		// Verify operatorId.
+		if (operatorId === null || (isNaN(operatorId) && parseInt(Number(operatorId)) !== operatorId)) {
+			throw Error('The parameter \'operatorId\' must be an integer.');
+		}
+
+		// Verify date.
+		if (typeof date === undefined || !(/^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/).test(date)) {
+			throw Error('The parameter \'date\' must be a date in format \'yyyy-mm-dd\'.');
+		}
+
+		// If we are still executing the arguments were correct.
+		
+		// Set URL.
+		http.setURL('/gateway/' + gatewayId + '/price/' + operatorId + '/?' + date);
 
 		// Perform the get operation.
 		http.get(callback);
