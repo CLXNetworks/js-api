@@ -97,9 +97,14 @@ clx.api = function (config) {
 		}
 	}
 
+	/*******************
+	 * OPERATORS
+	 * *****************/
+
 	/**
 	 * Retrieves all operators found and performs the callback sent
 	 * along with the function call.
+	 * @param  {Function} callback
 	 * @return {Void}
 	 */
 	this.getOperators = function (callback) {
@@ -111,13 +116,14 @@ clx.api = function (config) {
 	}
 
 	/**
-	 * Returns one operator based on the id provided.
+	 * Retrieve one operator based on the id provided.
 	 * @param  {Integer} operatorId
+	 * @param  {Function} callback
 	 * @return {Operator}
 	 */
 	this.getOperatorById = function (operatorId, callback) {
 		// Verify that the argument provided is an integer.
-		if (!isNaN(operatorId) && parseInt(Number(operatorId)) == operatorId) {
+		if (!isNaN(operatorId) && parseInt(Number(operatorId)) === operatorId) {
 			// Set URL.
 			http.setURL('/operator/' + operatorId);
 
@@ -128,6 +134,90 @@ clx.api = function (config) {
 		else {
 			throw Error('The parameter \'operatorId\' must be an integer.');
 		}
+	}
+
+	/*******************
+	 * GATEWAYS
+	 * *****************/
+
+	/**
+	 * Retrieves all gateways found and performs the callback sent
+	 * along with the function call.
+	 * @param  {Function} callback
+	 * @return {[type]}            [description]
+	 */
+	this.getGateways = function (callback) {
+		// Set the URL.
+		http.setURL('/gateway/');
+
+		// Perform the get operation.
+		http.get(callback);
+	}
+
+	/**
+	 * Retrieves one gateway based on the id provided.
+	 * @param  {Integer}   gatewayId
+	 * @param  {Function} callback
+	 * @return {Void}
+	 */
+	this.getGatewayById = function (gatewayId, callback) {
+		// Verify that the argument provided is an integer.
+		if (!isNaN(gatewayId) && parseInt(Number(gatewayId)) === gatewayId) {
+			// Set URL.
+			http.setURL('/gateway/' + gatewayId);
+
+			// Perform the get operation.
+			http.get(callback);
+		}
+
+		else {
+			throw Error('The parameter \'gatewayId\' must be an integer.');
+		}
+	}
+
+	/*******************
+	 * Price Entries
+	 * *****************/
+
+	/**
+	 * Retrieves all price entries for all operators on a specific gateway.
+	 * @param  {Integer}   gatewayId
+	 * @param  {Function} callback
+	 * @return {Void}
+	 */
+	this.getPriceEntriesByGatewayId = function (gatewayId, callback) {
+		// Verify that the argument provided is an integer.
+		if (!isNaN(gatewayId) && parseInt(Number(gatewayId)) === gatewayId) {
+			// Set URL.
+			http.setURL('/gateway/' + gatewayId + '/price/');
+
+			// Perform the get operation.
+			http.get(callback);
+		}
+
+		else {
+			throw Error('The parameter \'gatewayId\' must be an integer.');
+		}
+	}
+
+	this.getPriceEntriesByGatewayIdAndOperatorId = function (gatewayId, operatorId, callback) {
+		// Verify gatewayId.
+		if (gatewayId === null || (isNaN(gatewayId) && parseInt(Number(gatewayId)) !== gatewayId)) {
+			throw Error('The parameter \'gatewayId\' must be an integer.');
+		}
+
+		// Verify operatorId.
+		if (operatorId === null || (isNaN(operatorId) && parseInt(Number(operatorId)) !== operatorId)) {
+			throw Error('The parameter \'operatorId\' must be an integer.');
+		}
+
+		// If we are still executing the arguments were correct.
+		
+		// Set URL.
+		http.setURL('/gateway/' + gatewayId + '/price/' + operatorId);
+
+		// Perform the get operation.
+		http.get(callback);
 	}
 
 }
@@ -148,7 +238,7 @@ clx.http = function () {
 	 * for basic authentication.
 	 * @type {Object}
 	 */
-	this.auth;
+	this.auth = {};
 
 	/**
 	 * XMLHttpRequestObject.
@@ -161,11 +251,19 @@ clx.http = function () {
 	 * Verifies type and length before.
 	 * @param {String} url
 	 */
-	this.setURL = function (url) {
+	this.setURL = function (url, id) {
+		// Base URL.
+		var base = 'https://clx-aws.clxnetworks.com/api';
+
 		// Check that the parameter provided is a string and
 		// that it's longer than 0.
 		if ((typeof url == 'string' || url instanceof String) && url.length > 0) {
-			requestURL = url;
+			// If the URL ends with a '/' we need to remove it. A just in case.
+			if (url.substring(url.length - 1) === '/') {
+				url = url.substring(0, url.length - 1);
+			}
+
+			requestURL = base + url;
 		}
 
 		else {
@@ -186,9 +284,6 @@ clx.http = function () {
 
 		// Get the appropriate http object.
 		this.xhr = getHttpObject();
-
-		// Set appropriate basic authencation headers.
-		this.xhr.setRequestHeader('Authorization', 'Basic ' + Base64.encode(this.auth.username + ':' + this.auth.password));
 
 		// Setup the callback function.
 		this.xhr.onreadystatechange = function () {
@@ -214,6 +309,11 @@ clx.http = function () {
 
 		// Perform the request.
 		this.xhr.open('GET', requestURL);
+
+		// Set appropriate basic authencation headers.
+		this.xhr.setRequestHeader('Authorization', 'Basic ' + Base64.encode(this.auth.username + ':' + this.auth.password));
+
+		// Execute.
 		this.xhr.send();
 	}
 
