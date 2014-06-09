@@ -14,19 +14,22 @@
  ******/
 var testLocal = true;
 
+/**
+ * CONSIDERING TESTLOCAL VARIABLE THIS LINE BELOW INITIATES
+ * THE CORRECT HTTP() CLASS.
+ */
+var httpClass = (testLocal) ? new clx.httpTest() : new clx.http();
+
 /******
  * THIS BELOW IS WHAT IS CONSIDERED A VALID CONFIGURATION FOR
  * THE LIBRARY CLASS. SINCE MORE THAN ONE UNIT TEST REQUIRES A
  * VALID CONFIUGRATION IT'S USEFUL TO DEFINE IT HERE TO AVOID
  * HAVING TO REPEAT YOURSELF.
- *
- * THIS CONFIGURATION TAKES IN CONSIDERATION THE TESTLOCAL VARIABLE
- * AND INITIATES THE CORRECT HTTP() CLASS.
  ******/
 var validConfig = {
 	'username': 'rest_api',
 	'password': '@rr3stedD3velopment',
-	'http': (testLocal) ? new clx.httpTest() : new clx.http()
+	'http': httpClass
 };
 
 /*************
@@ -197,11 +200,13 @@ test('Invalid request - getOperatorById(): string passed as operator id', functi
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
-		obj.getOperatorById('string');
+		obj.getOperatorById('string', function () {
+			// Empty callback.
+		});
 	}, /parameter 'operatorId' must be an integer/);
 });
 
@@ -214,11 +219,13 @@ test('Invalid request - getOperatorById(): null passed as operator id', function
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
-		obj.getOperatorById(null);
+		obj.getOperatorById(null, function () {
+			// Empty callback.
+		});
 	}, /parameter 'operatorId' must be an integer/);
 });
 
@@ -231,11 +238,13 @@ test('Invalid request - getOperatorById(): operator id omitted', function () {
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
-		obj.getOperatorById();
+		obj.getOperatorById(undefined, function () {
+			// Empty callback.
+		});
 	}, /parameter 'operatorId' must be an integer/);
 });
 
@@ -257,7 +266,7 @@ asyncTest('Valid request - getGateways()', function () {
 	var config = {
 		'username': ' rest_api',
 		'password': ' rest_api',
-		'http': new clx.httpTest()
+		'http': httpClass
 	};
 	var obj = new clx.api(config);
 
@@ -291,11 +300,13 @@ test('Invalid request - getGatewayById(): string passed as gateway id', function
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
-		obj.getGatewayById('string');
+		obj.getGatewayById('string', function () {
+			// Empty callback.
+		});
 	}, /parameter 'gatewayId' must be an integer/);
 });
 
@@ -308,7 +319,7 @@ test('Invalid request - getGatewayById(): null passed as gateway id', function (
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
@@ -327,11 +338,13 @@ test('Invalid request - getGatewayById(): gateway id omitted', function () {
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
-		obj.getGatewayById();
+		obj.getGatewayById(undefined, function () {
+			// Empty callback.
+		});
 	}, /parameter 'gatewayId' must be an integer/);
 });
 
@@ -368,7 +381,7 @@ test('Invalid request - getPriceEntriesByGatewayId(): string passed as gateway i
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
@@ -387,7 +400,7 @@ test('Invalid request - getPriceEntriesByGatewayId(): null passed as gateway id'
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
@@ -406,7 +419,7 @@ test('Invalid request - getPriceEntriesByGatewayId(): gateway id omitted', funct
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
@@ -419,7 +432,6 @@ test('Invalid request - getPriceEntriesByGatewayId(): gateway id omitted', funct
 /**
  * Tests if a request to retrieve a single price entry belonging to a specific gateway
  * with a valid configuration and a valid gatewayId and operatorId passes.
- * @return {[type]} [description]
  */
 asyncTest('Valid request - getPriceEntriesByGatewayIdAndOperatorId()', function () {
 	expect(1)
@@ -442,7 +454,7 @@ test('Invalid request - getPriceEntriesByGatewayIdAndOperatorId(): string passed
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
@@ -462,7 +474,7 @@ test('Invalid request - getPriceEntriesByGatewayIdAndOperatorId(): null passed a
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
@@ -482,7 +494,7 @@ test('Invalid request - getPriceEntriesByGatewayIdAndOperatorId(): gateway id om
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
@@ -502,7 +514,7 @@ test('Invalid request - getPriceEntriesByGatewayIdAndOperatorId(): string passed
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
@@ -522,7 +534,7 @@ test('Invalid request - getPriceEntriesByGatewayIdAndOperatorId(): null passed a
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
@@ -542,7 +554,7 @@ test('Invalid request - getPriceEntriesByGatewayIdAndOperatorId(): operator id o
 		var config = {
 			'username': 'test',
 			'password': 'test',
-			'http': new clx.httpTest()
+			'http': httpClass
 		};
 		var obj = new clx.api(config);
 
@@ -551,6 +563,202 @@ test('Invalid request - getPriceEntriesByGatewayIdAndOperatorId(): operator id o
 		});
 	}, /parameter 'operatorId' must be an integer/);
 });
+
+/**
+ * Tests if a request to retrieve a single price entry belonging to a specific gateway, operator and
+ * date with a valid configuration and a valid gatewayId and operatorId passes.
+ */
+asyncTest('Valid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate()', function () {
+	expect(1)
+
+	var obj = new clx.api(validConfig);
+
+	obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, 10, '2011-05-04', function() {
+		equal(obj.getStatusCode(), 200);
+		start();
+	});
+});
+
+/**
+ * Tests if a request to retrieve a single price entry belonging to a specific gateway, operator and
+ * date with a valid configuration and a valid operatorId and date but with a string passed as gatewayId
+ * throws an error.
+ */
+test('Invalid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate(): string passed as gateway id', function () {
+	throws(function () {
+		var config = {
+			'username': 'test',
+			'password': 'test',
+			'http': httpClass
+		};
+		var obj = new clx.api(config);
+
+		obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate('string', 10, '2011-05-04', function () {
+			// Empty callback.
+		});
+	}, /parameter 'gatewayId' must be an integer/);
+});
+
+/**
+ * Tests if a request to retrieve a single price entry belonging to a specific gateway, operator and
+ * date with a valid configuration and a valid operatorId and date but with null passed as gatewayId
+ * throws an error.
+ */
+test('Invalid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate(): null passed as gateway id', function () {
+	throws(function () {
+		var config = {
+			'username': 'test',
+			'password': 'test',
+			'http': httpClass
+		};
+		var obj = new clx.api(config);
+
+		obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(null, 10, '2011-05-04', function () {
+			// Empty callback.
+		});
+	}, /parameter 'gatewayId' must be an integer/);
+});
+
+/**
+ * Tests if a request to retrieve a single price entry belonging to a specific gateway, operator and
+ * date with a valid configuration and a valid operatorId and date but with the gatewayId missing
+ * throws an error.
+ */
+test('Invalid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate(): gateway id omitted', function () {
+	throws(function () {
+		var config = {
+			'username': 'test',
+			'password': 'test',
+			'http': httpClass
+		};
+		var obj = new clx.api(config);
+
+		obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(undefined, 10, '2011-05-04', function () {
+			// Empty callback.
+		});
+	}, /parameter 'gatewayId' must be an integer/);
+});
+
+/**
+ * Tests if a request to retrieve a single price entry belonging to a specific gateway, operator and
+ * date with a valid configuration and a valid gatewayId and date but with a string passed as operatorId
+ * throws an error.
+ */
+test('Invalid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate(): string passed as operator id', function () {
+	throws(function () {
+		var config = {
+			'username': 'test',
+			'password': 'test',
+			'http': httpClass
+		};
+		var obj = new clx.api(config);
+
+		obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, 'string', '2011-05-04', function () {
+			// Empty callback.
+		});
+	}, /parameter 'operatorId' must be an integer/);
+});
+
+/**
+ * Tests if a request to retrieve a single price entry belonging to a specific gateway, operator and
+ * date with a valid configuration and a valid gatewayId and date but with null passed as operatorId
+ * throws an error.
+ */
+test('Invalid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate(): null passed as operator id', function () {
+	throws(function () {
+		var config = {
+			'username': 'test',
+			'password': 'test',
+			'http': httpClass
+		};
+		var obj = new clx.api(config);
+
+		obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, null, '2011-05-04', function () {
+			// Empty callback.
+		});
+	}, /parameter 'operatorId' must be an integer/);
+});
+
+/**
+ * Tests if a request to retrieve a single price entry belonging to a specific gateway, operator and
+ * date with a valid configuration and a valid gatewayId and date but with the operatorId missing
+ * throws an error.
+ */
+test('Invalid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate(): operator id omitted', function () {
+	throws(function () {
+		var config = {
+			'username': 'test',
+			'password': 'test',
+			'http': httpClass
+		};
+		var obj = new clx.api(config);
+
+		obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, undefined, '2011-05-04', function () {
+			// Empty callback.
+		});
+	}, /parameter 'operatorId' must be an integer/);
+});
+
+/**
+ * Tests if a request to retrieve a single price entry belonging to a specific gateway, operator and
+ * date with a valid configuration and a valid gatewayId and operatorId but with an integer passed as
+ * date throws an error.
+ */
+test('Invalid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate(): integer passed as date', function () {
+	throws(function () {
+		var config = {
+			'username': 'test',
+			'password': 'test',
+			'http': httpClass
+		};
+		var obj = new clx.api(config);
+
+		obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, 10, 9999, function () {
+			// Empty callback.
+		});
+	}, /parameter 'date' must be a date in format 'yyyy-mm-dd'/);
+});
+
+/**
+ * Tests if a request to retrieve a single price entry belonging to a specific gateway, operator and
+ * date with a valid configuration and a valid gatewayId and operatorId but the date in the wrong format
+ * throws an error.
+ */
+test('Invalid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate(): invalid date format', function () {
+	throws(function () {
+		var config = {
+			'username': 'test',
+			'password': 'test',
+			'http': httpClass
+		};
+		var obj = new clx.api(config);
+
+		obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, 10, '2014-04-', function () {
+			// Empty callback.
+		});
+	}, /parameter 'date' must be a date in format 'yyyy-mm-dd'/);
+});
+
+/**
+ * Tests if a request to retrieve a single price entry belonging to a specific gateway, operator and
+ * date with a valid configuration and a valid gatewayId and operatorId but the date is omitted and that
+ * an error is thrown.
+ */
+test('Invalid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate(): date omitted', function () {
+	throws(function () {
+		var config = {
+			'username': 'test',
+			'password': 'test',
+			'http': httpClass
+		};
+		var obj = new clx.api(config);
+
+		obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, 10, undefined, function () {
+			// Empty callback.
+		});
+	}, /parameter 'date' must be a date in format 'yyyy-mm-dd'/);
+});
+
 
 /* ========================================== */
 /* == END OF PRICE ENTRY REQUEST TESTS ====== */
