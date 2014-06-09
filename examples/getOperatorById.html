@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>CLXNetworks / js-api > example: getOperatorById()</title>
+		<meta charset="utf-8" />
+	</head>
+
+	<body>
+		<div style="font-size: 24px;" id="content"></div>
+
+		<script src="../src/clxApi.js"></script>
+		<script src="../tests/clxHttpTest.js"></script>
+		<script type="text/javascript">
+		// Create a configuration object.
+		// The required fields are the ones below.
+		var config = {
+			'username': 'username',
+			'password': 'password',
+			'http': new clx.httpTest()
+		};
+
+		// Initiate an instance of the wrapper class.
+		var obj = new clx.api(config);
+
+		// The function call takes a callback and your requested data
+		// gets injected as an argument.
+		obj.getOperatorById(10, function (operator) {
+			// Print the number of gateways found.
+			document.getElementById('content').innerHTML = 'Gateway name: ' + operator.name;
+
+			// Properties:
+			// 1. id
+			// 2. name
+			// 3. network
+			// 4. uniqueName
+			// 5. isoCountryCode
+			// 6. operationalState
+			// 7. operationalStatDate
+			// 8. numberOfSubscribers
+		});
+		</script>
+	</body>
+</html>

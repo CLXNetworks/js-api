@@ -1,0 +1,1 @@
+{"id":10,"name":"Orascom Algeria","network":"Djezzy","uniqueName":"Djezzy-DZ","isoCountryCode":"12","operationalState":"active","operationalStatDate":"-0001-11-30 00:00:00","numberOfSubscribers":0}

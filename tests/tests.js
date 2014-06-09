@@ -27,8 +27,8 @@ var httpClass = (testLocal) ? new clx.httpTest() : new clx.http();
  * HAVING TO REPEAT YOURSELF.
  ******/
 var validConfig = {
-	'username': 'rest_api',
-	'password': '@rr3stedD3velopment',
+	'username': 'username',
+	'password': 'password',
 	'http': httpClass
 };
 
