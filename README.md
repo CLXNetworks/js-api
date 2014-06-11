@@ -5,9 +5,11 @@ you, as a developer, can jumpstart your development process by skipping over som
 
 ## Available methods
 
-The methods listed below are the ones that are currently implemented. More should follow in the future. The required arguments are specified but every methods listed also accepts both a success 
-and a failed callback function. The success callback is called with one parameter, the actual data, when a request is 200 OK. The failed callback is called if any of the arguments were incorrect or 
-if the request itself failed in some matter.
+The methods listed below are the ones that are currently implemented. More should follow in the future. The required arguments are specified but every methods listed also accepts a callback function.
+
+The purpose of this function is to handle the data that is being fetched by the wrapper. This function should accept two parameters. The first one will be a integer value of the status code that the 
+request generated and the second one will be the data. By checking that the status code is a 200 OK in your code you should be safe from any unexpected data. In order to also protect your end user 
+from any uncaught exceptions you should also wrap your function calls in a try-catch. Things that throw an exception in this wrapper is mostly incorrect arguments. Eg. passing a string as a integer etc.
 
 1. getOperators()
 2. getOperatorById(operatorId)
@@ -30,7 +32,22 @@ var config = {
 }
 
 var clx = new clx.api(config);
-clx.getOperators(successCallback, failedCallback);
+
+try {
+	clx.getOperators(function (status, function () {
+		if (status === 200) {
+			// Do something with the operators.
+		}
+
+		else {
+			// The request was successful but no operators were found!
+		}
+	});
+}
+
+catch (e) {
+	// Something went wrong with the request.	
+}
 ```
 
 ## Unit tests
