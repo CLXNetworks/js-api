@@ -22,14 +22,16 @@ if the request itself failed in some matter.
 Start with cloning this entire repository to your desktop or by simply downloading the necessary files. Then it's simply a matter of creating a configuration object and instanisiate a class object 
 and you should be all set to start making requests!
 
-`var config = {
-`	'username': 'your-username',
-`	'password': 'your-password',
-`	'http': new clx.http()
-`}
-`
-`var clx = new clx.api(config);
-`clx.getOperators(successCallback, failureCallback);
+```
+var config = {
+	'username': 'your-username',
+	'password': 'your-password',
+	'http': new clx.http()
+}
+
+var clx = new clx.api(config);
+clx.getOperators(successCallback, failureCallback);
+```
 
 ## Unit tests
 
