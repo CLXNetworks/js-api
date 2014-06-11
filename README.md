@@ -31,9 +31,11 @@ var config = {
 	'http': new clx.http()
 }
 
-var clx = new clx.api(config);
-
 try {
+	// Get an instance of the class and pass the config along.
+	var clx = new clx.api(config);
+
+	// Perform the function you desire.
 	clx.getOperators(function (status, function () {
 		if (status === 200) {
 			// Do something with the operators.
