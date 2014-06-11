@@ -30,7 +30,7 @@ var config = {
 }
 
 var clx = new clx.api(config);
-clx.getOperators(successCallback, failureCallback);
+clx.getOperators(successCallback, failedCallback);
 ```
 
 ## Unit tests
