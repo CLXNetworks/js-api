@@ -52,10 +52,10 @@ clx.httpTest = function () {
 	 * the data we recieved is correct we can then send it along to the
 	 * callback function we take as an argument and then let the user process
 	 * the data however they please.
-	 * @param  {Function} cb
+	 * @param  {Function} callback
 	 * @return {Void}
 	 */
-	this.get = function (cb) {
+	this.get = function (callback) {
 		var that = this;
 
 		// Get the appropriate http object.
@@ -70,21 +70,19 @@ clx.httpTest = function () {
 				var json = responseParser(that.xhr);
 
 				// Send it along to the callback.
-				if (typeof(cb) === 'function') {
-					cb(json);
-				}
-
-				// If for some reason the request responded with some other
-				// status other than a 200 OK we need to assume something went
-				// wrong and throw.
-				else {
-					throw Error('The HTTP request failed with the status code: ' + that.xhr.status);
+				if (typeof(callback) === 'function') {
+					callback(that.xhr.status, json);
 				}
 			}
 		};
 
 		// Perform the request.
 		this.xhr.open('GET', requestURL);
+
+		// Set appropriate basic authencation headers.
+		this.xhr.setRequestHeader('Authorization', 'Basic ' + Base64.encode(this.auth.username + ':' + this.auth.password));
+
+		// Execute.
 		this.xhr.send();
 	}
 
