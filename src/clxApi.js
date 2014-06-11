@@ -117,13 +117,13 @@ clx.api = function (config) {
 
 	/**
 	 * Retrieve one operator based on the id provided.
-	 * @param  {Integer} operatorId
+	 * @param  {Integer}  operatorId
 	 * @param  {Function} callback
-	 * @return {Operator}
+	 * @return {Void}
 	 */
 	this.getOperatorById = function (operatorId, callback) {
-		// Verify that the argument provided is an integer.
-		if (!isNaN(operatorId) && parseInt(Number(operatorId)) === operatorId) {
+		// Verify operatorId by checking for null values, undefined and making sure that it's an integer.
+		if (clx.utility.isInteger(operatorId)) {
 			// Set URL.
 			http.setURL('/operator/' + operatorId);
 
@@ -144,7 +144,7 @@ clx.api = function (config) {
 	 * Retrieves all gateways found and performs the callback sent
 	 * along with the function call.
 	 * @param  {Function} callback
-	 * @return {[type]}            [description]
+	 * @return {Void}
 	 */
 	this.getGateways = function (callback) {
 		// Set the URL.
@@ -156,13 +156,13 @@ clx.api = function (config) {
 
 	/**
 	 * Retrieves one gateway based on the id provided.
-	 * @param  {Integer}   gatewayId
+	 * @param  {Integer}  gatewayId
 	 * @param  {Function} callback
 	 * @return {Void}
 	 */
 	this.getGatewayById = function (gatewayId, callback) {
-		// Verify that the argument provided is an integer.
-		if (!isNaN(gatewayId) && parseInt(Number(gatewayId)) === gatewayId) {
+		// Verify gatewayId by checking for null values, undefined and making sure that it's an integer.
+		if (clx.utility.isInteger(gatewayId)) {
 			// Set URL.
 			http.setURL('/gateway/' + gatewayId);
 
@@ -181,13 +181,13 @@ clx.api = function (config) {
 
 	/**
 	 * Retrieves all price entries for all operators on a specific gateway.
-	 * @param  {Integer}   gatewayId
+	 * @param  {Integer}  gatewayId
 	 * @param  {Function} callback
 	 * @return {Void}
 	 */
 	this.getPriceEntriesByGatewayId = function (gatewayId, callback) {
-		// Verify that the argument provided is an integer.
-		if (!isNaN(gatewayId) && parseInt(Number(gatewayId)) === gatewayId) {
+		// Verify gatewayId by checking for null values, undefined and making sure that it's an integer.
+		if (clx.utility.isInteger(gatewayId)) {
 			// Set URL.
 			http.setURL('/gateway/' + gatewayId + '/price/');
 
@@ -202,19 +202,19 @@ clx.api = function (config) {
 
 	/**
 	 * Retrieves a single price entry belonging to a specific operator and gateway.
-	 * @param  {Integer}   gatewayId
-	 * @param  {Integer}   operatorId
+	 * @param  {Integer}  gatewayId
+	 * @param  {Integer}  operatorId
 	 * @param  {Function} callback
 	 * @return {Void}
 	 */
 	this.getPriceEntriesByGatewayIdAndOperatorId = function (gatewayId, operatorId, callback) {
-		// Verify gatewayId.
-		if (gatewayId === null || (isNaN(gatewayId) && parseInt(Number(gatewayId)) !== gatewayId)) {
+		// Verify gatewayId by checking for null values, undefined and making sure that it's an integer.
+		if (!clx.utility.isInteger(gatewayId)) {
 			throw Error('The parameter \'gatewayId\' must be an integer.');
 		}
 
-		// Verify operatorId.
-		if (operatorId === null || (isNaN(operatorId) && parseInt(Number(operatorId)) !== operatorId)) {
+		// Verify operatorId by checking for null values, undefined and making sure that it's an integer.
+		if (!clx.utility.isInteger(operatorId)) {
 			throw Error('The parameter \'operatorId\' must be an integer.');
 		}
 
@@ -236,18 +236,18 @@ clx.api = function (config) {
 	 * @return {Void}
 	 */
 	this.getPriceEntriesByGatewayIdAndOperatorIdAndDate = function (gatewayId, operatorId, date, callback) {
-		// Verify gatewayId.
-		if (gatewayId === null || (isNaN(gatewayId) && parseInt(Number(gatewayId)) !== gatewayId)) {
+		// Verify gatewayId by checking for null values, undefined and making sure that it's an integer.
+		if (!clx.utility.isInteger(gatewayId)) {
 			throw Error('The parameter \'gatewayId\' must be an integer.');
 		}
 
-		// Verify operatorId.
-		if (operatorId === null || (isNaN(operatorId) && parseInt(Number(operatorId)) !== operatorId)) {
+		// Verify operatorId by checking for null values, undefined and making sure that it's an integer.
+		if (!clx.utility.isInteger(operatorId)) {
 			throw Error('The parameter \'operatorId\' must be an integer.');
 		}
 
-		// Verify date.
-		if (typeof date === undefined || !(/^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/).test(date)) {
+		// Verify date by checking for null values, undefined and making sure that it's in the correct format.
+		if (!clx.utility.isValidDate(date)) {
 			throw Error('The parameter \'date\' must be a date in format \'yyyy-mm-dd\'.');
 		}
 
@@ -258,6 +258,33 @@ clx.api = function (config) {
 
 		// Perform the get operation.
 		http.get(callback);
+	}
+
+}
+
+// =============================================== //
+// ============= Utility class. ================== //
+// =============================================== //
+clx.utility = {
+
+	/**
+	 * Helper function to check if a certain value is not null
+	 * and is a valid integer.
+	 * @param  {Integer}  value
+	 * @return {Boolean}
+	 */
+	isInteger: function (value) {
+		return (value !== null && (!isNaN(value) && parseInt(Number(value)) === value))
+	},
+
+	/**
+	 * Helper function to check if a certain date string is not null
+	 * is in the assumed format.
+	 * @param  {String}  value
+	 * @return {Boolean}
+	 */
+	isValidDate: function (value) {
+		return (typeof value !== undefined && (/^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/).test(value));
 	}
 
 }
@@ -316,10 +343,10 @@ clx.http = function () {
 	 * the data we recieved is correct we can then send it along to the
 	 * callback function we take as an argument and then let the user process
 	 * the data however they please.
-	 * @param  {Function} cb
+	 * @param  {Function} callback
 	 * @return {Void}
 	 */
-	this.get = function (cb) {
+	this.get = function (callback) {
 		var that = this;
 
 		// Get the appropriate http object.
@@ -334,15 +361,8 @@ clx.http = function () {
 				var json = responseParser(that.xhr);
 
 				// Send it along to the callback.
-				if (typeof(cb) === 'function') {
-					cb(json);
-				}
-
-				// If for some reason the request responded with some other
-				// status other than a 200 OK we need to assume something went
-				// wrong and throw.
-				else {
-					throw Error('The HTTP request failed with the status code: ' + that.xhr.status);
+				if (typeof(callback) === 'function') {
+					callback(that.xhr.status, json);
 				}
 			}
 		};
