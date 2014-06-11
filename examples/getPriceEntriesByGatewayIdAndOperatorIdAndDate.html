@@ -6,7 +6,9 @@
 	</head>
 
 	<body>
-		<div style="font-size: 24px;" id="content"></div>
+		<h1>getPriceEntriesByGatewayIdAndOperatorIdAndDate()</h1>
+		<h2>Fetched data:</h2>
+		<div style="font-size: 18px;" id="content"></div>
 
 		<script src="../src/clxApi.js"></script>
 		<script src="../tests/clxHttpTest.js"></script>
@@ -19,21 +21,35 @@
 			'http': new clx.httpTest()
 		};
 
-		// Initiate an instance of the wrapper class.
-		var obj = new clx.api(config);
+		try {
+			// Initiate an instance of the wrapper class.
+			var obj = new clx.api(config);
 
-		// The function call takes a callback and your requested data
-		// gets injected as an argument.
-		obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, 10, '2011-04-04', function (priceEntries) {
-			// Print the number of gateways found.
-			document.getElementById('content').innerHTML = 'Price: ' + priceEntries.price;
+			// The function call takes a callback and your requested data
+			// gets injected as an argument.
+			obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, 10, '2011-04-04', function (status, priceEntries) {
+				if (status === 200) {
+					// Print some info.
+					document.getElementById('content').innerHTML = 'price: ' + priceEntries.price;
+					document.getElementById('content').innerHTML += '<br>gateway: ' + priceEntries.gateway;
+					document.getElementById('content').innerHTML += '<br>operator: ' + priceEntries.operator;
 
-			// Properties:
-			// 1. price
-			// 2. gateway
-			// 3. operator
-			// 4. expireDate
-		});
+					// Properties of each price entry:
+					// 1. price
+					// 2. gateway
+					// 3. operator
+					// 4. expireDate
+				}
+
+				else {
+					// The request was successful but no content was found.
+				}
+			});
+		}
+
+		catch (e) {
+			// Something went wrong with the request!
+		}
 		</script>
 	</body>
 </html>

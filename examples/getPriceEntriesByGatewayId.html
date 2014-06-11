@@ -6,7 +6,9 @@
 	</head>
 
 	<body>
-		<div style="font-size: 24px;" id="content"></div>
+		<h1>getPriceEntriesByGatewayId()</h1>
+		<h2>Fetched data:</h2>
+		<div style="font-size: 18px;" id="content"></div>
 
 		<script src="../src/clxApi.js"></script>
 		<script src="../tests/clxHttpTest.js"></script>
@@ -19,21 +21,38 @@
 			'http': new clx.httpTest()
 		};
 
-		// Initiate an instance of the wrapper class.
-		var obj = new clx.api(config);
+		try {
+			// Initiate an instance of the wrapper class.
+			var obj = new clx.api(config);
 
-		// The function call takes a callback and your requested data
-		// gets injected as an argument.
-		obj.getPriceEntriesByGatewayId(2186, function (priceEntries) {
-			// Print the number of gateways found.
-			document.getElementById('content').innerHTML = 'Number of price entries found: ' + priceEntries.length;
+			// The function call takes a callback and your requested data
+			// gets injected as an argument.
+			obj.getPriceEntriesByGatewayId(2186, function (status, priceEntries) {
+				if (status === 200) {
+					// Print the number of price entries found.
+					document.getElementById('content').innerHTML = 'Number of price entries found: ' + priceEntries.length;
 
-			// Properties:
-			// 1. price
-			// 2. gateway
-			// 3. operator
-			// 4. expireDate
-		});
+					/**
+					 * for (var i = 0; i < priceEntries.length; i++) {
+					 * 	  // Do something with each price entry.
+					 * }
+					 */
+
+					// Properties of each price entry:
+					// 1. id
+					// 2. name
+					// 3. type
+				}
+
+				else {
+					// The request was successful but no content was found.
+				}
+			});
+		}
+
+		catch (e) {
+			// Something went wrong with the request!
+		}
 		</script>
 	</body>
 </html>

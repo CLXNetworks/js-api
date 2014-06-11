@@ -6,7 +6,9 @@
 	</head>
 
 	<body>
-		<div style="font-size: 24px;" id="content"></div>
+		<h1>getGateways()</h1>
+		<h2>Fetched data:</h2>
+		<div style="font-size: 18px;" id="content"></div>
 
 		<script src="../src/clxApi.js"></script>
 		<script src="../tests/clxHttpTest.js"></script>
@@ -19,20 +21,38 @@
 			'http': new clx.httpTest()
 		};
 
-		// Initiate an instance of the wrapper class.
-		var obj = new clx.api(config);
+		try {
+			// Initiate an instance of the wrapper class.
+			var obj = new clx.api(config);
 
-		// The function call takes a callback and your requested data
-		// gets injected as an argument.
-		obj.getGateways(function (gateways) {
-			// Print the number of gateways found.
-			document.getElementById('content').innerHTML = 'Number of gateways found: ' + gateways.length;
+			// The function call takes a callback and your requested data
+			// gets injected as an argument.
+			obj.getGateways(function (status, gateways) {
+				if (status === 200) {
+					// Print the number of gateways found.
+					document.getElementById('content').innerHTML = 'Number of gateways found: ' + gateways.length;
 
-			// Properties:
-			// 1. id
-			// 2. name
-			// 3. type
-		});
+					/**
+					 * for (var i = 0; i < gateways.length; i++) {
+					 * 	  // Do something with each gateway.
+					 * }
+					 */
+
+					// Properties of each gateway:
+					// 1. id
+					// 2. name
+					// 3. type
+				}
+
+				else {
+					// The request was successful but no content was found.
+				}
+			});
+		}
+
+		catch (e) {
+			// Something went wrong with the request!
+		}
 		</script>
 	</body>
 </html>
