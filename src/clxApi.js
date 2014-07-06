@@ -352,6 +352,12 @@ clx.http = function () {
 		// Get the appropriate http object.
 		this.xhr = getHttpObject();
 
+		// Set up the request.
+		this.xhr.open('GET', requestURL);
+
+		// Set appropriate basic authencation headers.
+		this.xhr.setRequestHeader('Authorization', 'Basic ' + Base64.encode(this.auth.username + ':' + this.auth.password));
+
 		// Setup the callback function.
 		this.xhr.onreadystatechange = function () {
 			// readyState == 4 means that we only do a check when the
@@ -366,12 +372,6 @@ clx.http = function () {
 				}
 			}
 		};
-
-		// Perform the request.
-		this.xhr.open('GET', requestURL);
-
-		// Set appropriate basic authencation headers.
-		this.xhr.setRequestHeader('Authorization', 'Basic ' + Base64.encode(this.auth.username + ':' + this.auth.password));
 
 		// Execute.
 		this.xhr.send();
