@@ -18,7 +18,7 @@
 		var config = {
 			'username': 'username',
 			'password': 'password',
-			'http': new clx.httpTest()
+			'http': new clx.http()
 		};
 
 		try {
@@ -28,6 +28,8 @@
 			// The function call takes a callback and your requested data
 			// gets injected as an argument.
 			obj.getOperators(function (status, operators) {
+				console.log(operators.length);
+
 				if (status === 200) {
 					// Print the number of operators found.
 					document.getElementById('content').innerHTML = 'Number of operators found: ' + operators.length;
@@ -41,12 +43,7 @@
 					// Properties of each operator:
 					// 1. id
 					// 2. name
-					// 3. network
-					// 4. uniqueName
-					// 5. isoCountryCode
-					// 6. operationalState
-					// 7. operationalStatDate
-					// 8. numberOfSubscribers
+					// 3. type
 				}
 
 				else {
