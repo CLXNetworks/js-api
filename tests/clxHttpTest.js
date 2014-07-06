@@ -34,6 +34,12 @@ clx.httpTest = function () {
 		// Check that the parameter provided is a string and
 		// that it's longer than 0.
 		if ((typeof url == 'string' || url instanceof String) && url.length > 0) {
+			// Firstly check if there is a query string and if there is we
+			// need to remove it to properly test it locally.
+			if (url.indexOf('?') !== -1) {
+				url = url.substring(0, url.lastIndexOf('?'));
+			}
+
 			// If the URL ends with a '/' we need to remove it.
 			if (url.substring(url.length - 1) === '/') {
 				url = url.substring(0, url.length - 1);

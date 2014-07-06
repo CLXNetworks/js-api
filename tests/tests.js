@@ -59,7 +59,6 @@ module('clx.api - config tests');
  */
 test('Valid config - username and password provided', function () {
 	var obj = new clx.api(validConfig);
-
 	ok(true);
 });
 
@@ -166,12 +165,26 @@ module('clx.api - operator request tests');
  * Tests if a request with a valid configuration for retrieving all operators passes.
  */
 asyncTest('Valid request - getOperators()', function () {
-	expect(1);
+	// Expect 8 assertions.
+	expect(8);
 
 	var obj = new clx.api(validConfig);
+	obj.getOperators(function(status, operators) {
+		// A valid request starts with the status code being 200.
+		equal(status, 200);
 
-	obj.getOperators(function() {
-		equal(obj.getStatusCode(), 200);
+		/*
+		 * Make sure all the expected properties are set.
+		 */
+		notEqual(operators[0].id, undefined);
+		notEqual(operators[0].name, undefined);
+		notEqual(operators[0].network, undefined);
+		notEqual(operators[0].uniqueName, undefined);
+		notEqual(operators[0].isoCountryCode, undefined);
+		notEqual(operators[0].operationalState, undefined);
+		notEqual(operators[0].operationalStatDate, undefined);
+		
+		// Start evaluatating.
 		start();
 	});
 });
@@ -181,12 +194,26 @@ asyncTest('Valid request - getOperators()', function () {
  * and a valid operatorId passes.
  */
 asyncTest('Valid request - getOperatorById()', function () {
-	expect(1)
+	// Expect 8 assertions.
+	expect(8);
 
 	var obj = new clx.api(validConfig);
+	obj.getOperatorById(10, function(status, operator) {
+		// A valid request starts with the status code being 200.
+		equal(status, 200);
 
-	obj.getOperatorById(10, function() {
-		equal(obj.getStatusCode(), 200);
+		/*
+		 * Make sure all the expected properties are set.
+		 */
+		notEqual(operator.id, undefined);
+		notEqual(operator.name, undefined);
+		notEqual(operator.network, undefined);
+		notEqual(operator.uniqueName, undefined);
+		notEqual(operator.isoCountryCode, undefined);
+		notEqual(operator.operationalState, undefined);
+		notEqual(operator.operationalStatDate, undefined);
+		
+		// Start evaluatating.
 		start();
 	});
 });
@@ -261,17 +288,22 @@ module('clx.api - gateway request tests');
  * Tests if a request with a valid configuration to retrieve all gateways passes.
  */
 asyncTest('Valid request - getGateways()', function () {
-	expect(1);
+	// Expect 4 assertions.
+	expect(4);
 
-	var config = {
-		'username': ' rest_api',
-		'password': ' rest_api',
-		'http': httpClass
-	};
-	var obj = new clx.api(config);
+	var obj = new clx.api(validConfig);
+	obj.getGateways(function(status, gateways) {
+		// A valid request starts with the status code being 200.
+		equal(status, 200);
 
-	obj.getGateways(function() {
-		equal(obj.getStatusCode(), 200);
+		/*
+		 * Make sure all the expected properties are set.
+		 */
+		notEqual(gateways[0].id, undefined);
+		notEqual(gateways[0].name, undefined);
+		notEqual(gateways[0].type, undefined);
+		
+		// Start evaluatating.
 		start();
 	});
 });
@@ -281,12 +313,22 @@ asyncTest('Valid request - getGateways()', function () {
  * and a valid gatewayId passes.
  */
 asyncTest('Valid request - getGatewayById()', function () {
-	expect(1)
+	// Expect 4 assertions.
+	expect(4);
 
 	var obj = new clx.api(validConfig);
+	obj.getGatewayById(2186, function(status, gateway) {
+		// A valid request starts with the status code being 200.
+		equal(status, 200);
 
-	obj.getGatewayById(2186, function() {
-		equal(obj.getStatusCode(), 200);
+		/*
+		 * Make sure all the expected properties are set.
+		 */
+		notEqual(gateway.id, undefined);
+		notEqual(gateway.name, undefined);
+		notEqual(gateway.type, undefined);
+		
+		// Start evaluatating.
 		start();
 	});
 });
@@ -362,12 +404,23 @@ module('clx.api - price entries request tests');
  * with a valid configuration and a valid gatewayId passes.
  */
 asyncTest('Valid request - getPriceEntriesByGatewayId()', function () {
-	expect(1)
+	// Expect 5 assertions.
+	expect(5);
 
 	var obj = new clx.api(validConfig);
+	obj.getPriceEntriesByGatewayId(2186, function(status, prices) {
+		// A valid request starts with the status code being 200.
+		equal(status, 200);
 
-	obj.getPriceEntriesByGatewayId(2186, function() {
-		equal(obj.getStatusCode(), 200);
+		/*
+		 * Make sure all the expected properties are set.
+		 */
+		notEqual(prices[0].price, undefined);
+		notEqual(prices[0].gateway, undefined);
+		notEqual(prices[0].operator, undefined);
+		notEqual(prices[0].expireDate, undefined);
+		
+		// Start evaluatating.
 		start();
 	});
 });
@@ -434,12 +487,23 @@ test('Invalid request - getPriceEntriesByGatewayId(): gateway id omitted', funct
  * with a valid configuration and a valid gatewayId and operatorId passes.
  */
 asyncTest('Valid request - getPriceEntriesByGatewayIdAndOperatorId()', function () {
-	expect(1)
+	// Expecting 5 assertions.
+	expect(5);
 
 	var obj = new clx.api(validConfig);
-
-	obj.getPriceEntriesByGatewayIdAndOperatorId(2186, 10, function() {
-		equal(obj.getStatusCode(), 200);
+	obj.getPriceEntriesByGatewayIdAndOperatorId(2186, 10, function(status, price) {
+		// A valid request starts with the status code being 200.
+		equal(status, 200);
+		
+		/*
+		 * Make sure all the expected properties are set.
+		 */
+		notEqual(price.price, undefined);
+		notEqual(price.gateway, undefined);
+		notEqual(price.operator, undefined);
+		notEqual(price.expireDate, undefined);
+		
+		// Start evaluatating.
 		start();
 	});
 });
@@ -569,12 +633,23 @@ test('Invalid request - getPriceEntriesByGatewayIdAndOperatorId(): operator id o
  * date with a valid configuration and a valid gatewayId and operatorId passes.
  */
 asyncTest('Valid request - getPriceEntriesByGatewayIdAndOperatorIdAndDate()', function () {
-	expect(1)
+	// Expect 5 assertions.
+	expect(5);
 
 	var obj = new clx.api(validConfig);
-
-	obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, 10, '2011-05-04', function() {
-		equal(obj.getStatusCode(), 200);
+	obj.getPriceEntriesByGatewayIdAndOperatorIdAndDate(2186, 10, '2011-05-04', function(status, price) {
+		// A valid request starts with the status code being 200.
+		equal(status, 200);
+		
+		/*
+		 * Make sure all the expected properties are set.
+		 */
+		notEqual(price.price, undefined);
+		notEqual(price.gateway, undefined);
+		notEqual(price.operator, undefined);
+		notEqual(price.expireDate, undefined);
+		
+		// Start evaluatating.
 		start();
 	});
 });
