@@ -28,8 +28,6 @@
 			// The function call takes a callback and your requested data
 			// gets injected as an argument.
 			obj.getOperators(function (status, operators) {
-				console.log(operators.length);
-
 				if (status === 200) {
 					// Print the number of operators found.
 					document.getElementById('content').innerHTML = 'Number of operators found: ' + operators.length;
