@@ -349,14 +349,17 @@ clx.http = function () {
 	this.get = function (callback) {
 		var that = this;
 
-		// Get the appropriate http object.
+		// Get the appropriate http object by using the private
+		// helper method.
 		this.xhr = getHttpObject();
 
-		// Set up the request.
+		// Set up the request by specifying that this is
+		// a GET request and by setting the URL which should
+		// be the private variable requestURL.
 		this.xhr.open('GET', requestURL);
 
-		// Set appropriate basic authencation headers.
-		this.xhr.setRequestHeader('Authorization', 'Basic ' + Base64.encode(this.auth.username + ':' + this.auth.password));
+		// Authenticate this request.
+		authenticate();
 
 		// Setup the callback function.
 		this.xhr.onreadystatechange = function () {
@@ -375,6 +378,29 @@ clx.http = function () {
 
 		// Execute.
 		this.xhr.send();
+	}
+
+	/**
+	 * For extendability this very basic functionality is in it's own function.
+	 * @return {Void}
+	 */
+	function autenticate() {
+		if (this.xhr !== undefined) {
+			// Make sure username and password are set.
+			if (this.auth.username === undefined || this.auth.username.length < 1) {
+				throw Error('You need to provide a username.');
+			}
+
+			if (this.auth.password === undefined || this.auth.password.length < 1) {
+				throw Error('You need to provide a password.');
+			}
+
+			// Base64 encode the username and password.
+			var authString = Base64.encode(this.auth.username + ':' + this.auth.password);
+
+			// Authenticate by setting the Basic Authorization header.
+			this.xhr.setRequestHeader('Authorization', 'Basic ' + authString);
+		}
 	}
 
 	/**
