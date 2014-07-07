@@ -6,6 +6,8 @@
 // ==== data. ==================================== //
 // =============================================== //
 clx.httpTest = function () {
+	var self = this;
+
 	/**
 	 * The URL we want to query.
 	 * @type {String}
@@ -67,6 +69,9 @@ clx.httpTest = function () {
 		// Get the appropriate http object.
 		this.xhr = getHttpObject();
 
+		// Authenticate.
+		autenticate();
+
 		// Setup the callback function.
 		this.xhr.onreadystatechange = function () {
 			// readyState == 4 means that we only do a check when the
@@ -85,11 +90,37 @@ clx.httpTest = function () {
 		// Perform the request.
 		this.xhr.open('GET', requestURL);
 
-		// Set appropriate basic authencation headers.
-		this.xhr.setRequestHeader('Authorization', 'Basic ' + Base64.encode(this.auth.username + ':' + this.auth.password));
-
 		// Execute.
 		this.xhr.send();
+	}
+
+	/**
+	 * For extendability this very basic functionality is in it's own function.
+	 * @return {Void}
+	 */
+	function autenticate() {
+		if (typeof self.xhr !== undefined) {
+			// Make sure username and password are set.
+			if (self.auth.username === undefined || self.auth.username.length < 1) {
+				throw Error('You need to provide a username.');
+			}
+
+			if (self.auth.password === undefined || self.auth.password.length < 1) {
+				throw Error('You need to provide a password.');
+			}
+
+			// Base64 encode the username and password.
+			var authString = Base64.encode(self.auth.username + ':' + self.auth.password);
+
+			// Authenticate by simply checking the provided auth data with
+			// the some hardcoded ones which will do for local testing.
+			var username = 'username';
+			var password = 'password';
+
+			if (self.auth.username !== username || self.auth.password !== password) {
+				throw Error('The username and password doesn\'t match.');
+			}
+		}
 	}
 
 	/**
