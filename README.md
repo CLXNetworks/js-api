@@ -60,6 +60,16 @@ prefered browser and the tests should run (granted you haven't disabled JavaScri
 If you would like to review the tests and how they work feel free to look around in **tests.js**. The file should be documented and by using the QUnits documentation aswell as looking through the 
 **ClxApi.js** file in the *src* folder you should be able to figure out how everyone works pretty well.
 
+## Future implementations
+
+* More methods.
+* Improved fallback.
+
+## Requirements
+
+Because of how limited CORS is with using basic authentication this wrapper unfortunately won't work unless your using is using either FF 3.5+, 
+Safari 4, IE8+ or any newer Chrome version. This will hopefully be fixed later on.
+
 ## Licence
 
 Licence information to come later.
