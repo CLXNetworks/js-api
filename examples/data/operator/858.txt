@@ -1,0 +1,1 @@
+{"id":858,"name":"TeliaSonera Sweden","network":"Telia Sweden","uniqueName":"Telia Sweden-SE","isoCountryCode":"752","operationalState":"active","operationalStatDate":"-0001-11-30 00:00:00","numberOfSubscribers":0}
