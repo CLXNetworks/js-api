@@ -63,6 +63,7 @@ If you would like to review the tests and how they work feel free to look around
 ## Future implementations
 
 * More methods.
+* More detailed error messages.
 * Improved fallback.
 
 ## Requirements
