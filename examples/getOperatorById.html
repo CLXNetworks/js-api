@@ -16,7 +16,7 @@
 		// Create a configuration object.
 		// The required fields are the ones below.
 		var config = {
-			'username': 'username',
+			'username': '',
 			'password': 'password',
 			'http': new clx.httpTest()
 		};
@@ -57,6 +57,8 @@
 
 		catch (e) {
 			// Something went wrong with the request!
+			// For the sake of this example we throw.
+			throw e;
 		}
 		</script>
 	</body>
