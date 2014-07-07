@@ -318,7 +318,7 @@ clx.http = function () {
 	 * Verifies type and length before.
 	 * @param {String} url
 	 */
-	this.setURL = function (url, id) {
+	this.setURL = function (url) {
 		// Base URL.
 		var base = 'https://clx-aws.clxnetworks.com/api';
 
