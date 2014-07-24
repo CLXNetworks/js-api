@@ -21,34 +21,37 @@ from any uncaught exceptions you should also wrap your function calls in a try-c
 
 ## Getting started
 
-Start with cloning this entire repository to your desktop or by simply downloading the necessary files. Then it's simply a matter of creating a configuration object and instanisiate a class object 
+Start with cloning this entire repository to your desktop or by simply downloading the necessary files. Then it's simply a matter of creating a configuration object and instanisiating a class object 
 and you should be all set to start making requests!
 
 ```
-var config = {
-	'username': 'your-username',
-	'password': 'your-password',
-	'http': new clx.http()
-}
-
-try {
-	// Get an instance of the class and pass the config along.
-	var clx = new clx.api(config);
-
-	// Perform the function you desire.
-	clx.getOperators(function (status, function () {
-		if (status === 200) {
-			// Do something with the operators.
-		}
-
-		else {
-			// The request was successful but no operators were found!
-		}
-	});
-}
-
-catch (e) {
-	// Something went wrong with the request.	
+// Wait for document to load.
+window.onload = function () {
+	var config = {
+		'username': 'username',
+		'password': 'password',
+		'http': new clx.http()
+	}
+	
+	try {
+		// Get an instance of the class and pass the config along.
+		var api = new clx.api(config);
+	
+		// Perform the function you desire.
+		api.getOperators(function (status, operators) {
+			if (status === 200) {
+				// Do something with the operators.
+			}
+	
+			else {
+				// The request was successful but no operators were found!
+			}
+		});
+	}
+	
+	catch (e) {
+		// Something went wrong with the request.	
+	}
 }
 ```
 
