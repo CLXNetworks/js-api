@@ -3,6 +3,9 @@
 	<head>
 		<title>CLXNetworks / js-api > example: getGatewayById()</title>
 		<meta charset="utf-8" />
+		
+		<script src="clxApi.js"></script>
+		<script src="clxHttpTest.js"></script>
 	</head>
 
 	<body>
@@ -10,47 +13,47 @@
 		<h2>Fetched data:</h2>
 		<div style="font-size: 18px;" id="content"></div>
 
-		<script src="../src/clxApi.js"></script>
-		<script src="../tests/clxHttpTest.js"></script>
 		<script type="text/javascript">
-		// Create a configuration object.
-		// The required fields are the ones below.
-		var config = {
-			'username': 'username',
-			'password': 'password',
-			'http': new clx.httpTest()
-		};
+		window.onload = function () {
+			// Create a configuration object.
+			// The required fields are the ones below.
+			var config = {
+				'username': 'username',
+				'password': 'password',
+				'http': new clx.httpTest()
+			};
 
-		try {
-			// Initiate an instance of the wrapper class.
-			var obj = new clx.api(config);
+			try {
+				// Initiate an instance of the wrapper class.
+				var obj = new clx.api(config);
 
-			// The function call takes a callback and your requested data
-			// gets injected as an argument.
-			obj.getGatewayById(2186, function (status, gateway) {
-				if (status === 200) {
-					// Print some info.
-					document.getElementById('content').innerHTML = 'id: ' + gateway.id;
-					document.getElementById('content').innerHTML += '<br>name: ' + gateway.name;
-					document.getElementById('content').innerHTML += '<br>type: ' + gateway.type;
+				// The function call takes a callback and your requested data
+				// gets injected as an argument.
+				obj.getGatewayById(2186, function (status, gateway) {
+					if (status === 200) {
+						// Print some info.
+						document.getElementById('content').innerHTML = 'id: ' + gateway.id;
+						document.getElementById('content').innerHTML += '<br>name: ' + gateway.name;
+						document.getElementById('content').innerHTML += '<br>type: ' + gateway.type;
 
-					// Array of gateways.
-					// Properties of gateway:
-					// 1. id
-					// 2. name
-					// 3. type
-				}
+						// Array of gateways.
+						// Properties of gateway:
+						// 1. id
+						// 2. name
+						// 3. type
+					}
 
-				else {
-					// The request was successful but no content was found.
-				}
-			});
-		}
+					else {
+						// The request was successful but no content was found.
+					}
+				});
+			}
 
-		catch (e) {
-			// Something went wrong with the request!
-			// For the sake of this example we throw.
-			throw e;
+			catch (e) {
+				// Something went wrong with the request!
+				// For the sake of this example we throw.
+				throw e;
+			}
 		}
 		</script>
 	</body>
